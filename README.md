@@ -43,12 +43,102 @@ Render the result to the HTML template.
 Publish the website in Localhost.
 
 ## PROGRAM:
+~~~
+## views.py
+from django.shortcuts import render
+
+def bill(request):
+    total = None
+
+    if request.method == "POST":
+        price = float(request.POST.get("price"))
+        gst = float(request.POST.get("gst"))
+
+        total = price + (price * gst / 100)
+
+    return render(request, "bill.html", {"total": total})
+```
+
+---
+
+## urls.py
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.bill, name='bill'),
+]
+```
+
+---
+
+## bill.html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GST Bill Calculator</title>
+
+    <style>
+        body{
+            font-family: Arial;
+            margin: 50px;
+        }
+
+        .box{
+            width: 350px;
+            padding: 20px;
+            border: 1px solid gray;
+            border-radius: 10px;
+        }
+
+        input{
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        button{
+            margin-top: 15px;
+            padding: 10px 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="box">
+    <h2>GST Bill Calculator</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <label>Price</label>
+        <input type="number" name="price" required>
+
+        <label>GST Percentage</label>
+        <input type="number" name="gst" required>
+
+        <button type="submit">Calculate</button>
+    </form>
+
+    {% if total %}
+        <h3>Total Bill Amount: ₹ {{ total }}</h3>
+    {% endif %}
+
+</div>
+
+</body>
+</html>
+```
+~~~
 
 
 ## OUTPUT - SERVER SIDE:
+<img width="944" height="328" alt="Screenshot 2026-05-28 092816" src="https://github.com/user-attachments/assets/d201b26c-592d-4e3d-95e0-d291351380ff" />
 
 
 ## OUTPUT - WEBPAGE:
+<img width="1675" height="941" alt="Screenshot 2026-05-28 093043" src="https://github.com/user-attachments/assets/bca2064e-e70d-4a3e-9fc8-02d40e2fd2b2" />
 
 
 ## RESULT:
